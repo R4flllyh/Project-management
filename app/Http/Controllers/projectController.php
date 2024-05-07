@@ -5,6 +5,7 @@ use App\Models\Project;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use App\Http\Controllers\UserProfileController;
 use Illuminate\Support\Facades\Auth;
 
 class projectController extends Controller
@@ -46,11 +47,16 @@ class projectController extends Controller
     }
 
     // view completed project page
-    public function completed() {
+    public function completed(Request $request) {
+        $month = $request->input('month'); // Retrieve month input from request
         $currentDateTime = Carbon::now()->setTimezone('Asia/Singapore');
         $formattedDateTime = $currentDateTime->format('d M Y'); // Example format: 2023-09-15 15:30:00
-        $completedProjects = Project::where('status', 'Done')->get();
-        $completedProjectsCount = Project::where('status', 'Done')->count();
+        $completedProjects = Project::where('status', 'Done')
+                                    ->when($month, function ($query) use ($month) {
+                                        return $query->whereMonth('completed_at', $month);
+                                    })
+                                    ->get();
+        $completedProjectsCount = $completedProjects->count();
         return view('pages.completed-project', compact('completedProjects', 'formattedDateTime', 'completedProjectsCount'));
     }
 
@@ -146,7 +152,7 @@ class projectController extends Controller
             'assets' => $request->input('assets'),
             'priority' => $request->input('priority'),
             'status' => $request->input('status'),
-            'user_id' => $request->input('user_id'),
+            'user_id' => auth()->id(),
             'project_type' => $request->input('project_type'),
             // update other fields as needed
         ]);

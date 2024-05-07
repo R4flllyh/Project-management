@@ -28,6 +28,7 @@ use App\Http\Controllers\ChangePassword;
 use App\Http\Controllers\GraphController;
 use App\Http\Controllers\projectController;
 use App\Http\Controllers\userController;
+use App\Http\Controllers\NotificationController;
 
 Route::get('/', function () {return redirect('/dashboard');})->middleware('auth');
 	Route::get('/register', [RegisterController::class, 'create'])->middleware('guest')->name('register');
@@ -39,9 +40,10 @@ Route::get('/', function () {return redirect('/dashboard');})->middleware('auth'
 	Route::get('/change-password', [ChangePassword::class, 'show'])->middleware('guest')->name('change-password');
 	Route::post('/change-password', [ChangePassword::class, 'update'])->middleware('guest')->name('change.perform');
 	Route::get('/dashboard', [HomeController::class, 'index'])->name('home')->middleware('auth');
+    Route::get('/filter-chart-by-year', [HomeController::class, 'filterChartByYear'])->name('filter_chart_by_year');
     Route::get('/teams', [TeamsController::class, 'teams']) -> name('teams')->middleware('auth');
     Route::post('/projects/filter', [projectController::class, 'filter'])->name('projects.filter')->middleware('auth');
-    Route::post('/save-subtask', 'YourController@saveSubtask')->name('save-subtask');
+    Route::post('/save-subtask', [ProjectController::class, 'saveSubtask'])->name('save-subtask');
     // project route
     Route::get('/project-management', [projectController::class, 'index']) -> name('project-index');
     Route::get('/project-completed', [projectController::class, 'completed']) -> name('project-completed');
@@ -52,6 +54,9 @@ Route::get('/', function () {return redirect('/dashboard');})->middleware('auth'
     Route::delete('/projects/delete/{id}', [ProjectController::class, 'destroy'])->name('project-destroy');
     Route::post('/project/store', [projectController::class, 'store']) -> name('project-store');
     Route::get('/project-management/{$id}/project-detail', [projectController::class, 'detail']) -> name('project-detail');
+    Route::get('/completed-projects', [ProjectController::class, 'completedProjects'])->name('completed-projects');
+    // Notification route
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index')->middleware('auth');
 Route::group(['middleware' => 'auth'], function () {
 	Route::get('/virtual-reality', [PageController::class, 'vr'])->name('virtual-reality');
 	Route::get('/rtl', [PageController::class, 'rtl'])->name('rtl');

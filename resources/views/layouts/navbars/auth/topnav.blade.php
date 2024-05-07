@@ -130,9 +130,16 @@
                         aria-labelledby="dropdownMenuButton">
                         <li class="mb-0">
                             <div class="dropdown-item border-radius-md px-2">
-                                <a href="{{ route('profile') }}" class="nav-link btn-link text-dark font-weight-bold mb-0 px-1">
-                                    <i class="fi fi-rr-user me-1 text-lg align-middle ps-0 me-2"></i>
-                                    <span class="d-sm-inline d-none">Profile</span>
+                                <a href="{{ route('profile') }}" class="nav-link btn-link text-dark font-weight-bold mb-0 px-1 d-flex align-items-center">
+                                    <i class="fi fi-rr-user text-lg align-middle ps-0 me-2 text-info"></i>
+                                    <div class="d-flex flex-column justify-content-center">
+                                        <h6 class="text-sm font-weight-normal mb-1">
+                                            <span class="font-weight-bold">Profile</span>
+                                        </h6>
+                                        <p class="text-xs text-secondary mb-0">
+                                            Setup your profile
+                                        </p>
+                                    </div>
                                 </a>
                             </div>
                         </li>
@@ -141,9 +148,16 @@
                                 @csrf
                                 <a href="{{ route('logout') }}"
                                     onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
-                                    class="nav-link btn-link text-dark font-weight-bold mb-0">
-                                    <i class="fi fi-rr-sign-out-alt me-2 text-lg align-middle"></i>
-                                    <span class="d-sm-inline d-none">Log out</span>
+                                    class="nav-link btn-link text-dark font-weight-bold mb-0 d-flex align-items-center">
+                                    <i class="fi fi-rr-sign-out-alt me-2 text-lg align-middle text-danger"></i>
+                                    <div class="d-flex flex-column justify-content-center">
+                                        <h6 class="text-sm font-weight-normal mb-1">
+                                            <span class="font-weight-bold">logout</span>
+                                        </h6>
+                                        <p class="text-xs text-secondary mb-0">
+                                            Sign out from app
+                                        </p>
+                                    </div>
                                 </a>
                             </form>
                         </li>

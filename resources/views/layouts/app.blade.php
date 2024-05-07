@@ -47,14 +47,14 @@
                 <main class="main-content border-radius-lg">
                     @yield('content')
                 </main>
-            {{-- @include('components.fixed-plugin') --}}
+            @include('components.fixed-plugin')
         @endif
+
     @endauth
 
     <!--   Core JS Files   -->
     <script src="assets/js/core/popper.min.js"></script>
     <script src="assets/js/core/bootstrap.min.js"></script>
-    <script src="assets/js/plugins/perfect-scrollbar.min.js"></script>
     <script src="assets/js/plugins/smooth-scrollbar.min.js"></script>
     <script>
         var win = navigator.platform.indexOf('Win') > -1;

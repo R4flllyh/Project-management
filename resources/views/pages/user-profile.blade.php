@@ -2,11 +2,12 @@
 
 @section('content')
     @include('layouts.navbars.auth.topnav', ['title' => 'Your Profile'])
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <div class="card shadow-lg mx-4 card-profile-bottom">
         <div class="card-body p-3">
             <div class="row gx-4">
                 <div class="col-auto">
-                    <div class="avatar avatar-xl">
+                    <div class="avatar avatar-xxl align-middle">
                         @if(auth()->user()->user_image)
                             <img src="{{ asset('storage/' . auth()->user()->user_image) }}" alt="profile_image" class="border-radius-lg shadow-sm">
                         @else
@@ -29,15 +30,15 @@
                     <div class="nav-wrapper position-relative end-0">
                         <ul class="nav nav-pills nav-fill p-1" role="tablist">
                             <li class="nav-item">
-                                <a class="nav-link mb-0 px-0 py-1 active"
-                                    data-bs-toggle="tab" id="tab1-tab" href="#tab1" role="tab" aria-controls="preview" aria-selected="true">
+                                <a class="nav-link mb-0 px-0 py-1 d-flex align-items-center justify-content-center active user-profile active-tab"
+                                    data-bs-toggle="tab" id="tab1-tab" href="#tab1" role="tab" aria-controls="tab1" aria-selected="true">
                                     <i class="fi fi-rr-settings"></i>
                                     <span class="ms-2">User Profile</span>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link mb-0 px-0 py-1 d-flex align-items-center justify-content-center tablinks"
-                                    data-bs-toggle="tab" id="tab2-tab" role="tab" href="#tab2" aria-controls="code" aria-selected="false">
+                                <a class="nav-link mb-0 px-0 py-1 d-flex align-items-center justify-content-center tablinks user-profile"
+                                    data-bs-toggle="tab" id="tab2-tab" role="tab" href="#tab2" aria-controls="tab2" aria-selected="false">
                                     <i class="fi fi-rr-box-open"></i>
                                     <span class="ms-2">Project</span>
                                 </a>
@@ -65,6 +66,23 @@
                                 </div>
                             </div>
                             <div class="card-body">
+                                <p class="text-uppercase text-sm">About me</p>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="example-text-input" class="form-control-label">Job title</label>
+                                            <input class="form-control" type="text" name="about"
+                                                value="{{ old('about', auth()->user()->about) }}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="example-text-input" class="form-control-label">User image</label>
+                                            <input class="form-control" type="file" name="user_image">
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr class="horizontal dark">
                                 <p class="text-uppercase text-sm">User Information</p>
                                 <div class="row">
                                     <div class="col-md-6">
@@ -121,23 +139,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                <hr class="horizontal dark">
-                                <p class="text-uppercase text-sm">About me</p>
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <label for="example-text-input" class="form-control-label">About me</label>
-                                            <input class="form-control" type="text" name="about"
-                                                value="{{ old('about', auth()->user()->about) }}">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <label for="example-text-input" class="form-control-label">User Image</label>
-                                            <input class="form-control" type="file" name="user_image">
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
                         </form>
                     </div>
@@ -155,7 +156,7 @@
                                             Project</th>
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                            Timeline</th>
+                                            Deadline</th>
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                             Status</th>
@@ -195,7 +196,7 @@
                                             <p class="text-sm font-weight-bold mb-0">{{$project->assignee->username}}</p>
                                         </td>
                                         <td class="align-middle">
-                                            <a href="#" class="btn btn-primary">Details</a>
+                                            <a href="{{ route('page', ['page' => 'project-management']) }}" class="btn btn-primary">Details</a>
                                             {{-- <button class="btn btn-link text-secondary mb-0">
                                                 <i class="fa fa-ellipsis-v text-xs"></i>
                                             </button> --}}
@@ -212,6 +213,32 @@
             document.addEventListener('DOMContentLoaded', function () {
                 var myTabs = new bootstrap.Tab(document.getElementById('tab1-tab'));
                 myTabs.show(); // Show the first tab by default
+            });
+
+            $(document).ready(function() {
+                // Set default tab active
+                var defaultTab = $('.nav-item .user-profile').first();
+                defaultTab.addClass('active').addClass('active-tab').addClass('text-white').css('background-color', '#226ef2');
+
+                // Activate corresponding tab content
+                var defaultTabTarget = defaultTab.attr('href');
+                $(defaultTabTarget).addClass('show active');
+
+                // Tab click event
+                $('.nav-item .user-profile').click(function(e) {
+                    e.preventDefault(); // Prevent default link behavior
+
+                    // Remove 'active' class and reset background from all tabs
+                    $('.nav-item .user-profile').removeClass('active').removeClass('active-tab').removeClass('text-white').css('background-color', '');
+
+                    // Add 'active' class and set background to white on the clicked tab
+                    $(this).addClass('active').addClass('active-tab').addClass('text-white').css('background-color', '#226ef2');
+
+                    // Activate corresponding tab content
+                    var tabTarget = $(this).attr('href');
+                    $('.tab-pane').removeClass('show active'); // Remove 'show' and 'active' class from all panes
+                    $(tabTarget).addClass('show active'); // Add 'show' and 'active' class to the target pane
+                });
             });
         </script>
         @include('layouts.footers.auth.footer')

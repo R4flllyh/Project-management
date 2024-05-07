@@ -33,11 +33,14 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ str_contains(request()->url(), 'project-progress') == true ? 'active' : '' }}" href="{{ route('page', ['page' => 'project-progress']) }}">
-                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="fi fi-rr-envelope-dot text-danger text-lg opacity-10"></i>
+                <a class="nav-link d-flex justify-content-between align-items-center {{ request()->routeIs('notifications.index') ? 'active' : '' }}" href="{{ route('notifications.index') }}">
+                    <div class="d-flex align-items-center">
+                        <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="fi fi-rr-envelope-dot text-danger text-lg opacity-10"></i>
+                        </div>
+                        <span class="nav-link-text ms-1">Notification</span>
                     </div>
-                    <span class="nav-link-text ms-1">Notification</span>
+                    <span class="badge rounded-pill bg-danger">24</span>
                 </a>
             </li>
             <li class="nav-item">
@@ -111,7 +114,7 @@
                     </div>
                     <div class="d-flex flex-column">
                         <span class="nav-link-text ms-1 mb-0">{{ auth()->user()->username }}</span>
-                        <span class="nav-link-text text-muted text-xs ms-1">{{ auth()->user()->about }}</span>
+                        <span class="nav-link-text text-muted text-xs ms-1">{{ auth()->user()->email }}</span>
                     </div>
                 </div>
             </li>

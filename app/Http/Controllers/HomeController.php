@@ -27,14 +27,43 @@ class HomeController extends Controller
      */
     public function index()
     {
+        // Project
         $currentDateTime = Carbon::now()->setTimezone('Asia/Singapore');
         $formattedDateTime = $currentDateTime->format('Y');
         $ProjectList = Project::all();
         $monthlyProjects = Project::selectRaw('MONTH(created_at) as month, COUNT(*) as project_count')->whereYear('created_at', '=', date('Y'))->groupBy(DB::raw('MONTH(created_at)'))->get();
+
+        // Count Projects
         $onProgressProjectsCount = Project::where('status', 'progress')->count();
         $RevisionProjectsCount = Project::where('status', 'Revision')->count();
         $PendingProjectsCount = Project::where('status', 'Pending')->count();
         $CompletedProjectsCount = Project::where('status', 'Done')->count();
-        return view('pages.dashboard')->with(['RevisionProjectsCount' => $RevisionProjectsCount, 'onProgressProjectsCount' => $onProgressProjectsCount, 'PendingProjectsCount' => $PendingProjectsCount, 'CompletedProjectsCount' => $CompletedProjectsCount, 'ProjectList' => $ProjectList, 'monthlyProjects' => $monthlyProjects, 'formattedDateTime' => $formattedDateTime]);
+
+        // list projects
+        $onProgressProjects = Project::where('status', 'progress');
+        $RevisionProjects = Project::where('status', 'Revision');
+        $PendingProjects = Project::where('status', 'Pending');
+        $CompletedProjects = Project::where('status', 'Done');
+
+        // return
+        return view('pages.dashboard')->with(['RevisionProjectsCount' => $RevisionProjectsCount, 'onProgressProjectsCount' => $onProgressProjectsCount, 'PendingProjectsCount' => $PendingProjectsCount, 'CompletedProjectsCount' => $CompletedProjectsCount, 'ProjectList' => $ProjectList, 'monthlyProjects' => $monthlyProjects, 'formattedDateTime' => $formattedDateTime, 'onProgressProjects' => $onProgressProjects, 'RevisionProjects' => $RevisionProjects, 'PendingProjects' => $PendingProjects, 'CompletedProjects' => $CompletedProjects]);
+    }
+
+    // New method to handle the year filtering
+    public function filterChartByYear(Request $request)
+    {
+        $year = $request->input('year');
+
+        // Fetch chart data based on the selected year
+        $monthlyProjects = Project::selectRaw('MONTH(created_at) as month, COUNT(*) as project_count')
+            ->whereYear('created_at', '=', $year)
+            ->groupBy(DB::raw('MONTH(created_at)'))
+            ->get();
+
+        // Prepare and return the filtered data as JSON response
+        return response()->json([
+            'months' => $monthlyProjects->pluck('month'),
+            'projectCounts' => $monthlyProjects->pluck('project_count')
+        ]);
     }
 }

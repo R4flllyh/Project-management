@@ -11,8 +11,13 @@ class TeamsController extends Controller
 {
     public function teams() {
         $user = Auth::user();
-        $users = User::all();
+        $users = User::all() -> map(function($user) {
+            $user -> is_online = $user -> isOnline();
+            return $user;
+        });
+        $ProjectActivity = Project::all();
 
-        return view('pages.teams', compact('users', 'user'));
+        return view('pages.teams', compact('users', 'user', 'ProjectActivity'));
     }
 }
+

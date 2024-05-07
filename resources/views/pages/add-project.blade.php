@@ -46,7 +46,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="font-weight-bold fs-6" for="timeline">Due date</label>
-                                    <input type="date" id="datemax" name="timeline" class="form-control" placeholder="Timeline">
+                                    <input type="date" id="datemax" name="timeline" class="form-control datepicker" placeholder="Timeline">
                                     <p class="description py-1">Give your project due date so everyone know when's it done</p>
                                 </div>
                                 <div class="form-group">
@@ -90,7 +90,7 @@
                                     <p class="description py-1">Give your project a assignee so everyone know Who worked on the project</p>
                                 </div>
                                 <div class="form-group">
-                                    <label class="font-weight-bold fs-6" for="project_image">Add some image (Leave blank if you don't want to fill)</label>
+                                    <label class="font-weight-bold fs-6" for="project_image">Image (Optional)</label>
                                     <input class="form-control py-1" type="file" name="project_image">
                                     <p class="description py-1">Give your project a image so everyone know what's it for (optional)</p>
                                 </div>
@@ -99,9 +99,9 @@
                                     <img id="imagePreview" src="{{ asset('Flipper.png') }}" class="rounded-circle shadow-lg p-2" style="aspect-ratio: 1/1; width: 100%; object-fit: cover;" alt="hero">
                             </div> --}}
                         </div>
-                        <div class="d-flex justify-content-between py-5">
-                            <a class="btn btn-danger" href="{{ route('project-index') }}" style="width: 48%"><i class="fi fi-rr-undo me-2"></i> Back</a>
-                            <button type="submit" class="btn btn-primary" style="width: 48%"><i class="fi fi-rr-add-folder me-2"></i> Submit</button>
+                        <div class="d-flex justify-content-end py-5 gap-2">
+                            <a class="btn btn-danger" href="{{ route('project-index') }}"><i class="fi fi-rr-undo me-2"></i> Back</a>
+                            <button type="submit" class="btn btn-primary"><i class="fi fi-rr-add-folder me-2"></i> Submit</button>
                         </div>
                     </form>
                 </div>

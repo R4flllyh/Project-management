@@ -7,12 +7,23 @@
                 <div class="card">
                     <div class="card-body p-3">
                         <div class="row">
-                            <div class="col-6">
+                            <div class="col-8">
                                 <h5 class="mb-0">🏆 Completed Project</h5>
                                 <p class="mb-0 ps-2 pt-1">Showing <span class="text-primary">{{ $completedProjectsCount }}</span> projects</p>
                             </div>
-                            <div class="col-6 d-flex justify-content-end align-items-center">
-                                <h6 class="mb-0 me-3 align-middle py-2"><i class="fi fi-rr-calendar-lines text-xl me-2 align-middle mb-0"></i> {{ $formattedDateTime }}</h6>
+                            <div class="col-4 d-flex justify-content-end align-items-center gap-2">
+                                <form action="{{ route('completed-projects') }}" method="GET">
+                                    <select class="form-control" name="month" onchange="this.form.submit()">
+                                        <option value="">Select Month</option>
+                                        @foreach(range(1, 12) as $month)
+                                            <option value="{{ $month }}">{{ date('F', mktime(0, 0, 0, $month, 10)) }}</option>
+                                        @endforeach
+                                    </select>
+                                </form>
+                                <a href="#" class="btn bg-gradient-dark px-3 mb-0">
+                                    <i class="fi fi-rr-bars-filter text-xl me-2 align-middle mb-0"></i><span>Filter</span>
+                                </a>
+                                {{-- <h6 class="mb-0 me-3 align-middle py-2"><i class="fi fi-rr-calendar-lines text-xl me-2 align-middle mb-0"></i> {{ $formattedDateTime }}</h6> --}}
                             </div>
                         </div>
                     </div>
@@ -27,24 +38,6 @@
                                 <img src="{{ asset('storage/' . $project -> project_image) }}" class="card-img-top">
                             @endif
                             <div class="card-body">
-                                <div class="dropdown d-flex position-absolute top-4 end-2">
-                                    <button class="btn d-flex align-items-center p-0 shadow-none" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="material-symbols-outlined text-primary opacity-10">
-                                            more_vert
-                                        </i>
-                                    </button>
-                                    <ul class="dropdown-menu">
-                                        <li>
-                                            <form action="{{Route('project-destroy', $project -> id)}}" method="post">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="dropdown-item" href="#">
-                                                    <i class="fi fi-rr-trash me-2"></i> Delete
-                                                </button>
-                                            </form>
-                                        </li>
-                                    </ul>
-                                </div>
                                 <div class="d-flex gap-2">
                                     <h6 class="text-center px-3 rounded priority-low">{{$project -> priority}}</h6>
                                     <h6 class="text-center px-3 rounded priority-medium">{{$project -> project_type}}</h6>
@@ -54,9 +47,9 @@
                                 <p class="card-text">{{\Illuminate\Support\str::limit($project -> project_description, $limit = 50, $end = '...')}}</p>
                             </div>
                             <div class="card-footer d-flex justify-content-between align-items-center pt-2">
-                                <small class="text-body-secondary"><i class="fi fi-rr-clock-five py-0 me-2"></i> Created on {{ $project -> created_at -> format('d M Y') }}</small>
+                                <small class="text-body-secondary"><i class="fi fi-rr-clock-five py-0 me-2"></i> Updated {{ $project -> updated_at -> diffForHumans() }}</small>
                                 <div class="d-flex gap-2 align-items-center">
-                                    <img src="/storage/{{ $project->assignee->user_image }}" alt="..." class="avatar shadow rounded-circle avatar-sm">
+                                    <img src="{{ asset('storage/' . $project->assignee->user_image) }}" alt="..." class="avatar shadow rounded-circle avatar-sm">
                                     <a type="button" class="btn btn-primary mb-0" data-bs-toggle="modal" href="{{route('project-detail', $project -> id)}}" data-bs-target="#staticBackdrop{{$loop->iteration}}">
                                             Details
                                     </a>
@@ -68,10 +61,32 @@
                         <div class="modal-dialog modal-dialog-centered modal-lg">
                           <div class="modal-content px-3">
                             <div class="modal-body">
-                                <div class="d-flex col-8 mb-3 gap-2 px-2">
-                                    <h6 class="text-center px-3 mt-4 rounded priority-important">{{$project -> project_type}}</h6>
-                                    <h6 class="text-center px-3 mt-4 rounded priority-low">{{$project -> status}}</h6>
-                                    <h6 class="text-center px-3 mt-4 rounded priority-medium">Created on {{$project -> created_at -> format('d M Y')}}</h6>
+                                <div class="row">
+                                    <div class="d-flex col-8 mb-3 gap-2 px-2">
+                                        <h6 class="text-center px-3 mt-4 rounded priority-important">{{$project -> project_type}}</h6>
+                                        <h6 class="text-center px-3 mt-4 rounded priority-low">{{$project -> status}}</h6>
+                                        <h6 class="text-center px-3 mt-4 rounded priority-medium">Created on {{$project -> created_at -> format('d M Y')}}</h6>
+                                    </div>
+                                    <div class="col-4 d-flex align-items-center justify-content-end">
+                                        <div class="dropdown d-flex mt-4">
+                                            <button class="btn d-flex align-items-center p-0 shadow-none" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="material-symbols-outlined text-primary opacity-10">
+                                                    more_vert
+                                                </i>
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li>
+                                                    <form action="{{Route('project-destroy', $project -> id)}}" method="post">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="dropdown-item" href="#">
+                                                            <i class="fi fi-rr-trash me-2"></i> Delete
+                                                        </button>
+                                                    </form>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
                                 </div>
                                 <h2 class="fs-3 px-2">{{$project -> project_name}}</h2>
                                 <p class="px-2">{{$project -> project_description}}</p>
@@ -175,7 +190,7 @@
                                                     <td>
                                                         <div class="d-flex justify-content-end pe-1">
                                                             <div class="font-weight-bold text-sm text-center py-2 rounded priority-warning mb-0" style="width: 40%; color: rgb(5, 87, 180);">
-                                                                <img src="/storage/{{ $project->assignee->user_image }}" alt="..." class="avatar avatar-xs shadow rounded-circle me-2">
+                                                                <img src="{{ asset('storage/' . $project->assignee->user_image) }}" alt="..." class="avatar avatar-xs shadow rounded-circle me-2">
                                                                 <span>{{$project->assignee->username}}</span>
                                                             </div>
                                                         </div>
@@ -216,4 +231,5 @@
             </div>
         </div>
     </div>
+    @include('layouts.footers.auth.footer')
 @endsection

@@ -65,4 +65,8 @@ class User extends Authenticatable
     {
         return $this->hasMany(\App\Models\Project::class, 'user_id'); // Assuming 'user_id' is the foreign key in your projects table
     }
+
+    public function isOnline() {
+        return $this -> last_active_at > now() -> subMinutes(1);
+    }
 }

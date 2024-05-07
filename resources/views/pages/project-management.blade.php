@@ -58,26 +58,7 @@
                         <img src="{{ asset('storage/' . $project -> project_image) }}" class="card-img-top">
                     @endif
                     <div class="card-body">
-                        <div class="dropdown d-flex position-absolute top-4 end-2">
-                            <button class="btn d-flex align-items-center text-lg p-0 shadow-none" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="material-symbols-outlined text-primary opacity-10">
-                                    more_vert
-                                </i>
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="{{Route('project-edit', $project -> id)}}">
-                                    <i class="fi fi-rr-file-edit text-dark me-2"></i> Edit</a></li>
-                                <li>
-                                    <form action="{{Route('project-destroy', $project -> id)}}" method="post">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="dropdown-item" href="#">
-                                            <i class="fi fi-rr-trash me-2"></i> Delete
-                                        </button>
-                                    </form>
-                                </li>
-                            </ul>
-                        </div>
+
                         <div class="d-flex gap-2">
                             <h6 class="text-center px-3 rounded priority-low">{{$project -> priority}}</h6>
                             <h6 class="text-center px-3 rounded priority-medium">{{$project -> project_type}}</h6>
@@ -87,7 +68,7 @@
                         <p class="card-text">{{\Illuminate\Support\str::limit($project -> project_description, $limit = 50, $end = '...')}}</p>
                     </div>
                     <div class="card-footer d-flex justify-content-between align-items-center pt-2">
-                        <small class="text-body-secondary align-middle"><i class="fi fi-rr-clock-five align-middle me-2"></i> Created on {{ $project -> created_at -> format('d M Y') }}</small>
+                        <small class="text-body-secondary align-middle"><i class="fi fi-rr-clock-five align-middle me-2"></i>{{\Carbon\Carbon::parse($project->timeline)-> diffForHumans() }}</small>
                         <div class="d-flex gap-2 align-items-center">
                             @if ($project->assignee->user_image)
                             <img src="{{ asset('storage/' . $project->assignee->user_image) }}" alt="..." class="avatar shadow rounded-circle avatar-sm">
@@ -102,13 +83,37 @@
                 </div>
             </div>
             <div class="modal fade" id="staticBackdrop{{$loop->iteration}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-dialog modal-dialog-scrollable modal-lg">
                   <div class="modal-content px-3">
-                    <div class="modal-body">
-                        <div class="d-flex col-8 mb-3 gap-2 px-2">
-                            <h6 class="text-center px-3 mt-4 rounded priority-important">{{$project -> project_type}}</h6>
-                            <h6 class="text-center px-3 mt-4 rounded priority-low">{{$project -> status}}</h6>
-                            <h6 class="text-center px-3 mt-4 rounded priority-medium">Created on {{$project -> created_at -> format('d M Y')}}</h6>
+                    <div class="modal-body" style="overflow-x: hidden;">
+                        <div class="row">
+                            <div class="d-flex col-8 mb-3 gap-2 px-2">
+                                <h6 class="text-center px-3 mt-4 rounded priority-important">{{$project -> project_type}}</h6>
+                                <h6 class="text-center px-3 mt-4 rounded priority-low">{{$project -> status}}</h6>
+                                <h6 class="text-center px-3 mt-4 rounded priority-medium">Created on {{$project -> created_at -> format('d M Y')}}</h6>
+                            </div>
+                            <div class="col-4 d-flex align-items-center justify-content-end">
+                                <div class="dropdown d-flex mt-4">
+                                    <button class="btn d-flex align-items-center text-lg p-0 shadow-none" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="material-symbols-outlined text-primary opacity-10">
+                                            more_vert
+                                        </i>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="{{Route('project-edit', $project -> id)}}">
+                                            <i class="fi fi-rr-file-edit text-dark me-2"></i> Edit</a></li>
+                                        <li>
+                                            <form action="{{Route('project-destroy', $project -> id)}}" method="post">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="dropdown-item" href="#">
+                                                    <i class="fi fi-rr-trash me-2"></i> Delete
+                                                </button>
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
                         <h2 class="fs-3 px-2">{{$project -> project_name}}</h2>
                         <p class="px-2">{{$project -> project_description}}</p>
@@ -130,13 +135,13 @@
                                                     <i class="fi fi-rr-calendar-clock text-info text-lg opacity-10 me-3 mt-3"></i>
                                                 </div>
                                                 <div class="d-flex flex-column justify-content-center">
-                                                  <h6 class="mb-0">Due Date</h6>
+                                                  <h6 class="mb-0">Deadline</h6>
                                                 </div>
                                               </div>
                                             </td>
                                             <td>
                                                 <div class="d-flex align-items-center justify-content-end pe-1">
-                                                    <p class="font-weight-bold text-sm text-center py-2 rounded priority-medium mb-0" style="width: 40%; color: #f18d4b;">{{\Carbon\Carbon::parse($project->timeline)->format('d M Y') }}</p>
+                                                    <p class="font-weight-bold text-sm text-center py-2 rounded mb-0" style="width: 40%; color: #f18d4b;">{{\Carbon\Carbon::parse($project->timeline)->format('d M Y') }}</p>
                                                 </div>
                                             </td>
                                           </tr>
@@ -154,7 +159,7 @@
                                             </td>
                                             <td>
                                                 <div class="d-flex justify-content-end pe-1">
-                                                    <p class="font-weight-bold text-sm text-center py-2 rounded priority-low mb-0" style="width: 40%; color: rgb(40, 139, 252);">{{$project -> priority}}</p>
+                                                    <p class="font-weight-bold text-sm text-center py-2 rounded mb-0" style="width: 40%; color: rgb(40, 139, 252);">{{$project -> priority}}</p>
                                                 </div>
                                             </td>
                                           </tr>
@@ -211,7 +216,7 @@
                                             </td>
                                             <td>
                                                 <div class="d-flex justify-content-end pe-1">
-                                                    <div class="font-weight-bold text-sm text-center py-2 rounded priority-warning mb-0" style="width: 40%; color: rgb(5, 87, 180);">
+                                                    <div class="font-weight-bold text-sm text-center py-2 rounded mb-0" style="width: 40%; color: rgb(5, 87, 180);">
                                                         @if ($project->assignee->user_image)
                                                         <img src="{{ asset('storage/' . $project->assignee->user_image) }}" alt="..." class="avatar avatar-xs shadow rounded-circle me-2">
                                                         @else
@@ -240,16 +245,37 @@
                                         <!-- Subtasks will be dynamically added here -->
                                     </div>
                                 </div>
+                                <div class="mt-4">
+                                    <h4 class="fw-3">Comments</h4>
+
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
+                    <div class="modal-footer px-0">
+                    <div class="col d-flex justify-content-start gap-2 align-items-center">
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                @if (auth()->user()->user_image)
+                                    <img src="{{ asset('storage/' . auth()->user()->user_image) }}" alt="..." class="avatar shadow rounded-circle avatar-xs">
+                                @else
+                                    <img src="{{ asset('img/Graggle – 07.png') }}" alt="..." class="avatar shadow rounded-circle avatar-xs">
+                                @endif
+                            </span>
+                            <input type="text" class="form-control" placeholder="Write a comment.." aria-label="With textarea"></input>
+                        </div>
+                        <a href="#" class="btn bg-gradient-dark px-3 mb-0">
+                            <i class="fi fi-rr-bars-filter text-xl me-2 align-middle mb-0"></i><span>Send</span>
+                        </a>
+                    </div>
+                    <div class="col d-flex justify-content-end gap-2">
                         <button type="button" class="btn btn-secondary mt-0 mb-0" data-bs-dismiss="modal"><i class="fi fi-rr-delete me-2 align-middle"></i>Close</button>
                         <form action="{{route('status-complete', $project -> id)}}" method="post">
                             @csrf
                             @method('post')
                             <button type="submit" class="btn btn-primary mb-0"><i class="fi fi-rr-check-circle me-2 align-middle"></i>Mark as Done</button>
                         </form>
+                    </div>
                     </div>
                   </div>
                 </div>
